@@ -1,0 +1,7 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
+  &lt;Assembly Path="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Drawing.dll" /&gt;&#xD;
+&lt;/AssemblyExplorer&gt;</s:String>
+	<s:Boolean x:Key="/Default/Housekeeping/UnitTestingMru/UnitTestSessionPersistentData/=D7B41E7913FC494F816477400611FA7C/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/Housekeeping/UnitTestingMru/UnitTestSessionPersistentData/=D7B41E7913FC494F816477400611FA7C/Name/@EntryValue">TestMinus</s:String>
+	<s:String x:Key="/Default/Housekeeping/UnitTestingMru/UnitTestSessionPersistentData/=D7B41E7913FC494F816477400611FA7C/XmlSerializedElements/@EntryValue">&lt;Session&gt;&lt;Elements&gt;&lt;UnitTestElement Provider="nUnit" Id="EricShop.Tests.ColorVectorTest" type="NUnitTestFixtureElement" Project="C3DE3CA5-B129-47BD-AECB-272601E22E6A" /&gt;&lt;UnitTestElement Provider="nUnit" Id="EricShop.Tests.ColorVectorTest.TestMinus" ParentId="EricShop.Tests.ColorVectorTest" type="NUnitTestElement" TypeName="EricShop.Tests.ColorVectorTest" MethodName="TestMinus" Project="C3DE3CA5-B129-47BD-AECB-272601E22E6A" /&gt;&lt;/Elements&gt;&lt;/Session&gt;</s:String></wpf:ResourceDictionary>
