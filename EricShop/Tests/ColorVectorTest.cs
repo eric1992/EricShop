@@ -30,5 +30,11 @@ namespace EricShop.Tests
             c = a - b;
             Assert.AreEqual(new ColorVector(Color.FromArgb(0, 10, 10, 10)), b - a);
         }
+
+        [Test]
+        public void Norm()
+        {
+            Assert.AreEqual(Math.Sqrt(1200), a.Norm());
+        }
     }
 }

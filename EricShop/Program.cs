@@ -1,8 +1,5 @@
-﻿using System.Drawing;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using System.Drawing;
 
 namespace EricShop
 {
@@ -10,7 +7,12 @@ namespace EricShop
     {
         static void Main(string[] args)
         {
-            ShopImage test = new ShopImage(args[0]);
+            var test = new ShopImage(args[0]);
+            var search = new Searcher(test);
+            search.FirstBorderSearch();
+            var ret = search.GetDiffedPicture();
+            ret.Save(args[0]+ "diffed.png");
+
         }
     }
 }
