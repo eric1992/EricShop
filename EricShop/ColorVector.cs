@@ -6,7 +6,7 @@ using System.Text;
 
 namespace EricShop
 {
-    class ColorVector
+    public class ColorVector
     {
         private Color _color;
 
@@ -20,6 +20,21 @@ namespace EricShop
             _color = input;
         }
 
+        public Color Color
+        {
+            get { return _color; }
+            private set { _color = value; }
+        }
+
+        public static ColorVector operator +(ColorVector x, ColorVector y)
+        {
+            int summedA = x.Color.A + y.Color.A;
+            int summedR = x.Color.R + y.Color.R;
+            int summedG = x.Color.G + y.Color.G;
+            int summedB = x.Color.B + y.Color.B;
+            return new ColorVector(Color.FromArgb(summedA, summedR, summedG, summedB));
+        }
+
         public static ColorVector operator -(ColorVector x, ColorVector y)
         {
             int difAlpha = Math.Abs(x._color.A - y._color.A);
@@ -27,6 +42,14 @@ namespace EricShop
             int difGreen = Math.Abs(x._color.G - y._color.G);
             int difBlue = Math.Abs(x._color.B - y._color.B);
             return new ColorVector(Color.FromArgb(difAlpha, difRed, difGreen, difBlue));
+        }
+
+        public static ColorVector operator *(double c, ColorVector x)
+        {
+            var scaledRed = (int) Math.Round(c * (double)x.Color.R);
+            var scaledGreen = (int) Math.Round(c * (double)x.Color.G);
+            var scaledBlue = (int) Math.Round(c * (double)x.Color.B);
+            return new ColorVector(Color.FromArgb(x.Color.A, scaledRed, scaledGreen, scaledBlue));
         }
 
         public double Norm()

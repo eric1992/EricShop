@@ -7,12 +7,10 @@ namespace EricShop
     {
         static void Main(string[] args)
         {
-            var test = new ShopImage(args[0]);
-            var search = new Searcher(test);
-            search.FirstBorderSearch();
-            var ret = search.GetDiffedPicture();
-            ret.Save(args[0]+ "diffed.png");
-
+            var Image = new ShopImage(new Bitmap(args[0]));
+            var Operator = new ScalarShift{Scale = 0};
+            var Mapped = (ShopImage) (Operator.Operate(Image));
+            Mapped.Bitmap.Save("Diffed.png");
         }
     }
 }

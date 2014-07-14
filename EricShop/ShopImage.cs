@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace EricShop
 {
-    class ShopImage
+    internal class ShopImage : IColorVectorMatrix
     {
-        private Bitmap _bitmap;
-        public Bitmap Bitmap { get { return _bitmap; }}
+        private readonly Bitmap _bitmap;
+
+        public Bitmap Bitmap
+        {
+            get { return _bitmap; }
+        }
 
         public ShopImage(String file)
         {
@@ -27,144 +28,72 @@ namespace EricShop
             }
         }
 
-        public ColorVector GetPixel(int x, int y)
+        public ShopImage(Bitmap input)
         {
-            return new ColorVector(_bitmap.GetPixel(x, y));
+            _bitmap = (Bitmap)input.Clone();
         }
 
-        public KeyValuePair<Direction, double> MaxChangeDirection(int x, int y)
+        public ShopImage(IColorVectorMatrix inputMatrix)
         {
-            double maxChange = double.MinValue;
-            double runningChange;
-            Direction runningDirection = Direction.Left;
-            if (HasLeftAbove(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x - 1, y - 1)).Norm()) > maxChange)
-            {
-                maxChange = runningChange;
-                runningDirection = Direction.LeftAbove;
-            }
-            if (HasAbove(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x, y - 1)).Norm()) > maxChange)
-            {
-                maxChange = runningChange;
-                runningDirection = Direction.Above;
-            }
-            if (HasRightAbove(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x + 1, y - 1)).Norm()) > maxChange)
-            {
-                maxChange = runningChange;
-                runningDirection = Direction.RightAbove;
-            }
-            if (HasRight(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x + 1, y)).Norm()) > maxChange)
-            {
-                maxChange = runningChange;
-                runningDirection = Direction.Right;
-            }
-            if (HasRightBelow(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x + 1, y - 1)).Norm()) > maxChange)
-            {
-                maxChange = runningChange;
-                runningDirection = Direction.RightBelow;
-            }
-            if (HasBelow(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x, y - 1)).Norm()) > maxChange)
-            {
-                maxChange = runningChange;
-                runningDirection = Direction.Below;
-            }
-            if (HasLeftBelow(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x - 1, y - 1)).Norm()) > maxChange)
-            {
-                maxChange = runningChange;
-                runningDirection = Direction.LeftBelow;
-            }
-            if (HasLeft(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x - 1, y)).Norm()) > maxChange)
-            {
-                maxChange = runningChange;
-                runningDirection = Direction.LeftAbove;
-            }
-            return new KeyValuePair<Direction, double>(runningDirection, maxChange);
-        }
-
-        public KeyValuePair<Direction, double> MinChangeDirection(int x, int y)
-        {
-            double minChange = double.MaxValue;
-            double runningChange;
-            Direction runningDirection = Direction.Left;
-            if (HasLeftAbove(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x - 1, y - 1)).Norm()) < minChange)
-            {
-                minChange = runningChange;
-                runningDirection = Direction.LeftAbove;
-            }
-            if (HasAbove(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x, y - 1)).Norm()) < minChange)
-            {
-                minChange = runningChange;
-                runningDirection = Direction.Above;
-            }
-            if (HasRightAbove(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x + 1, y - 1)).Norm()) < minChange)
-            {
-                minChange = runningChange;
-                runningDirection = Direction.RightAbove;
-            }
-            if (HasRight(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x + 1, y)).Norm()) < minChange)
-            {
-                minChange = runningChange;
-                runningDirection = Direction.Right;
-            }
-            if (HasRightBelow(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x + 1, y - 1)).Norm()) < minChange)
-            {
-                minChange = runningChange;
-                runningDirection = Direction.RightBelow;
-            }
-            if (HasBelow(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x, y - 1)).Norm()) < minChange)
-            {
-                minChange = runningChange;
-                runningDirection = Direction.Below;
-            }
-            if (HasLeftBelow(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x - 1, y - 1)).Norm()) < minChange)
-            {
-                minChange = runningChange;
-                runningDirection = Direction.LeftBelow;
-            }
-            if (HasLeft(x, y) && (runningChange = (GetPixel(x, y) - GetPixel(x - 1, y)).Norm()) < minChange)
-            {
-                minChange = runningChange;
-                runningDirection = Direction.LeftAbove;
-            }
-            return new KeyValuePair<Direction, double>(runningDirection, minChange);
+            _bitmap = new Bitmap(inputMatrix.Width(), inputMatrix.Height());
+            for (var i = 0; i < inputMatrix.Width(); i++)
+                for (var j = 0; j < inputMatrix.Height(); j++)
+                    SetPixel(i, j, inputMatrix.GetPixel(i, j));
         }
         
-
-
-        public bool HasLeft(int x, int y)
+        public int Width()
         {
-            return x > 0;
-        }
-        public bool HasRight(int x, int y)
-        {
-            return x < _bitmap.Width - 1;
-        }
-        public bool HasAbove(int x, int y)
-        {
-            return y > 0;
-        }
-        public bool HasBelow(int x, int y)
-        {
-            return y < _bitmap.Height - 1;
+            return _bitmap.Width;
         }
 
-        public bool HasLeftAbove(int x, int y)
+        public int Height()
         {
-            return HasLeft(x, y) && HasAbove(x, y);
+            return _bitmap.Height;
         }
 
-        public bool HasRightAbove(int x, int y)
+        public ColorVector GetPixel(int x, int y)
         {
-            return HasRight(x, y) && HasAbove(x, y);
+            return (x >= 0 && x < Width() && y >= 0 && y < Height()) ? new ColorVector(_bitmap.GetPixel(x, y)) : new ColorVector(Color.Black);
         }
 
-        public bool HasLeftBelow(int x, int y)
+        public ColorVector GetPixel(Point point)
         {
-            return HasLeft(x, y) && HasBelow(x, y);
+            return new ColorVector(_bitmap.GetPixel(point.X, point.Y));
         }
 
-        public bool HasRightBelow(int x, int y)
+        public void SetPixel(int x, int y, ColorVector color)
         {
-            return HasRight(x, y) && HasBelow(x, y);
+            _bitmap.SetPixel(x, y, color.Color);
+        }
+
+        public void SetPixel(Point pixel, ColorVector color)
+        {
+            _bitmap.SetPixel(pixel.X, pixel.Y, color.Color);
+        }
+
+        public List<ColorVector> GetSubSet(List<Point> pixels)
+        {
+            var pixelList = new List<ColorVector>(pixels.Capacity);
+            pixelList.AddRange(pixels.Select(pixel => new ColorVector(GetPixel(pixel.X, pixel.Y).Color)));
+            return pixelList;
+        }
+
+        public void SetSubSet(Dictionary<Point, ColorVector> pairs)
+        {
+            foreach (var pair in pairs)
+            {
+                SetPixel(pair.Key, pair.Value);
+            }
+        }
+
+        public IColorVectorMatrix Clone()
+        {
+            return new ShopImage(_bitmap);
+        }
+
+        public IColorVectorMatrix CloneEmpty()
+        {
+            return new ShopImage(new Bitmap(Width(), Height()));
         }
     }
 }

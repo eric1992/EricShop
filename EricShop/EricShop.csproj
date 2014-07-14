@@ -49,9 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="ColorVector.cs" />
-    <Compile Include="Searcher.cs" />
+    <Compile Include="GaussianBlur.cs" />
+    <Compile Include="IColorVectorMatrix.cs" />
+    <Compile Include="IImageOperator.cs" />
+    <Compile Include="ScalarShift.cs" />
+    <Compile Include="ShiftOperator.cs" />
     <Compile Include="ShopImage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
