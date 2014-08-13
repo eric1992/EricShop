@@ -1,0 +1,6 @@
+﻿namespace EricShop
+{
+    interface IColorVector
+    {
+    }
+}

@@ -1,45 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EricShop
 {
     class WeightedAverageMap : IImageOperator
     {
-        private Dictionary<Point, double> _weightedValues;
+        public Dictionary<Point, double> PointWeights;
 
         public WeightedAverageMap()
         {
-            _weightedValues = new Dictionary<Point, double>();
+            PointWeights = new Dictionary<Point, double>();
         }
         
         public IColorVectorMatrix Operate(IColorVectorMatrix input)
         {
-            var returnMatrix = input.CloneEmpty();
-            for (var i = 0; i < input.Width(); i++)
+            if (!PointWeights.Any())
             {
-                for (var j = 0; j < input.Height(); j++)
+                return null;
+            }
+            var returnMatrix = input.CloneEmpty();
+            foreach (var pointVector in returnMatrix)
+            {
+                var pointToSet = pointVector.Key;
+                var vectorToSet = pointVector.Value;
+                foreach (var pointWeight in PointWeights)
                 {
-                    var weightedVector = new ColorVector();
-                    weightedVector = _weightedValues.Aggregate(
-                        weightedVector, (current, weightedValue) => current + (weightedValue.Value*input.GetPixel(i + weightedValue.Key.X, j + weightedValue.Key.Y)));
-                    returnMatrix.SetPixel(i, j, weightedVector);
+                    var currentDisplacement = pointWeight.Key;
+                    var currentWeightedPoint = pointWeight.Value * input.GetPixel(pointToSet.X + currentDisplacement.X, pointToSet.Y + currentDisplacement.Y);
+                    vectorToSet += currentWeightedPoint;
                 }
+                returnMatrix.SetPixel(pointToSet, vectorToSet);
             }
             return returnMatrix;
-        }
-
-        public void AddWeight(int x, int y, double weight)
-        {
-            var summed = 0.0;
-            foreach (var current in _weightedValues.Values)
-            {
-                summed += current;
-
-            }
         }
     }
 }

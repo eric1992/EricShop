@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 
 namespace EricShop
@@ -51,34 +51,34 @@ namespace EricShop
             return _bitmap.Height;
         }
 
-        public ColorVector GetPixel(int x, int y)
+        public ARGBColorVector GetPixel(int x, int y)
         {
-            return (x >= 0 && x < Width() && y >= 0 && y < Height()) ? new ColorVector(_bitmap.GetPixel(x, y)) : new ColorVector(Color.Black);
+            return (x >= 0 && x < Width() && y >= 0 && y < Height()) ? new ARGBColorVector(_bitmap.GetPixel(x, y)) : new ARGBColorVector(Color.FromArgb(0,0,0,0));
         }
 
-        public ColorVector GetPixel(Point point)
+        public ARGBColorVector GetPixel(Point point)
         {
-            return new ColorVector(_bitmap.GetPixel(point.X, point.Y));
+            return new ARGBColorVector(_bitmap.GetPixel(point.X, point.Y));
         }
 
-        public void SetPixel(int x, int y, ColorVector color)
+        public void SetPixel(int x, int y, ARGBColorVector argbColor)
         {
-            _bitmap.SetPixel(x, y, color.Color);
+            _bitmap.SetPixel(x, y, argbColor.Color);
         }
 
-        public void SetPixel(Point pixel, ColorVector color)
+        public void SetPixel(Point pixel, ARGBColorVector argbColor)
         {
-            _bitmap.SetPixel(pixel.X, pixel.Y, color.Color);
+            _bitmap.SetPixel(pixel.X, pixel.Y, argbColor.Color);
         }
 
-        public List<ColorVector> GetSubSet(List<Point> pixels)
+        public List<ARGBColorVector> GetSubSet(List<Point> pixels)
         {
-            var pixelList = new List<ColorVector>(pixels.Capacity);
-            pixelList.AddRange(pixels.Select(pixel => new ColorVector(GetPixel(pixel.X, pixel.Y).Color)));
+            var pixelList = new List<ARGBColorVector>(pixels.Capacity);
+            pixelList.AddRange(pixels.Select(pixel => new ARGBColorVector(GetPixel(pixel.X, pixel.Y).Color)));
             return pixelList;
         }
 
-        public void SetSubSet(Dictionary<Point, ColorVector> pairs)
+        public void SetSubSet(Dictionary<Point, ARGBColorVector> pairs)
         {
             foreach (var pair in pairs)
             {
@@ -93,7 +93,32 @@ namespace EricShop
 
         public IColorVectorMatrix CloneEmpty()
         {
-            return new ShopImage(new Bitmap(Width(), Height()));
+            var emptyImage = new ShopImage(new Bitmap(Width(), Height()));
+            var x = 0;
+            var y = 0;
+            var input = new ARGBColorVector(Color.FromArgb(0, 0, 0, 0));
+            foreach (var pointVector in emptyImage)
+            {
+                emptyImage.SetPixel(x, y, input);
+            }
+            return emptyImage;
+        }
+
+        public IEnumerator<KeyValuePair<Point, ARGBColorVector>> GetEnumerator()
+        {
+            for (var i = 0; i < Width(); i++)
+            {
+                for (var j = 0; j < Height(); j ++)
+                {
+                    yield return new KeyValuePair<Point, ARGBColorVector>(new Point(i, j), GetPixel(i, j));
+                }
+            }
+            yield break;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

@@ -49,8 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColorVector.cs" />
+    <Compile Include="ARGBColorVector.cs" />
     <Compile Include="GaussianBlur.cs" />
+    <Compile Include="IColorVector.cs" />
     <Compile Include="IColorVectorMatrix.cs" />
     <Compile Include="IImageOperator.cs" />
     <Compile Include="ScalarShift.cs" />
